@@ -9,6 +9,6 @@ namespace story_maker.Dtos
         public string Description { get; set; }
         public string Story { get; set; }
         public int CharacterClassId { get; set; }
-        public List<Trait> Traits { get; set; }
+        public int[] Traits { get; set; }
     }
 }

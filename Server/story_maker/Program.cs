@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using story_maker.Services.Implementations;
 using story_maker.Services.Interfaces;
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddCors();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -18,8 +21,8 @@ builder.Services.AddDbContext<DataContext>(
 builder.Services.AddAutoMapper(typeof(Profile));
 
 builder.Services.AddScoped<ICharacterService, CharacterService>();
-builder.Services.AddScoped<ICharacterService, CharacterService>();
-builder.Services.AddScoped<ICharacterService, CharacterService>();
+builder.Services.AddScoped<ICharacterClassService, CharacterClassService>();
+builder.Services.AddScoped<ITraitService, TraitService>();
 
 var app = builder.Build();
 
@@ -30,6 +33,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
 
 app.UseAuthorization();
 

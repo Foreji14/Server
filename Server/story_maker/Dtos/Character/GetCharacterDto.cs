@@ -10,6 +10,6 @@ namespace story_maker.Dtos
         public string Description { get; set; }
         public string Story { get; set; }
         public GetCharacterClassDto CharacterClass { get; set; }
-        public List<Trait> Traits { get; set; }
+        public List<GetTraitDto> Traits { get; set; }
     }
 }

@@ -17,17 +17,17 @@ namespace story_maker.Controllers
             this._traitService = _traitService;
         }
         [HttpGet("GetAllTraits")]
-        public async Task<ActionResult<ServiceResponse<List<GetTraitDto>>>> Get()
+        public async Task<ActionResult<ServiceResponse<List<GetTraitDto>>>> GetAllTraits()
         {
             return Ok(await _traitService.GetAllTraits());
         }
         [HttpGet("GetTraitById/{id}")]
-        public async Task<ActionResult<ServiceResponse<GetTraitDto>>> GetSingle(int id)
+        public async Task<ActionResult<ServiceResponse<GetTraitDto>>> GetTraitById(int id)
         {
             return Ok(await _traitService.GetTraitById(id));
         }
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ServiceResponse<List<GetTraitDto>>>> Delete(int id)
+        public async Task<ActionResult<ServiceResponse<List<GetTraitDto>>>> DeleteTraitById(int id)
         {
             var response = await _traitService.DeleteTraitById(id);
             if (response.Data == null)
@@ -43,7 +43,7 @@ namespace story_maker.Controllers
             return Ok(await _traitService.AddTrait(newTrait));
         }
         [HttpPut("UpdateTraitById/{id}")]
-        public async Task<ActionResult<ServiceResponse<GetTraitDto>>> UpdateTrait(int id, UpdateTraitDto updatedTrait)
+        public async Task<ActionResult<ServiceResponse<GetTraitDto>>> UpdateTraitById(int id, UpdateTraitDto updatedTrait)
         {
             var response = await _traitService.UpdateTrait(id, updatedTrait);
             if (response.Data == null)

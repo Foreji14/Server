@@ -23,8 +23,21 @@ namespace story_maker.Services.Implementations
             var res = new ServiceResponse<GetCharacterDto>();
             try
             {
-                var character = _mapper.Map<Character>(newCharacter);
+                var character = new Character
+                {
+                    CharacterClassId = newCharacter.CharacterClassId,
+                    Name = newCharacter.Name,
+                    Story = newCharacter.Story,
+                    Description = newCharacter.Description
+                };
+
+
                 await _context.Characters.AddAsync(character);
+                await _context.SaveChangesAsync();
+
+                var traits = await _context.Traits.Where(x => newCharacter.Traits.Contains(x.TraitId)).ToListAsync();
+                character.Traits = traits;
+
                 await _context.SaveChangesAsync();
 
                 res.Data = _mapper.Map<GetCharacterDto>(character);
@@ -141,11 +154,11 @@ namespace story_maker.Services.Implementations
             var res = new ServiceResponse<GetCharacterDto>();
             try
             {
-                res.Data = await _context.Characters
+                res.Data = _mapper.Map<GetCharacterDto>(
+                    await _context.Characters
                         .Include(x => x.CharacterClass)
                         .Include(x => x.Traits)
-                        .Select(x => _mapper.Map<GetCharacterDto>(x))
-                        .FirstOrDefaultAsync(x => x.CharacterId == id);
+                        .FirstOrDefaultAsync(x => x.CharacterId == id));
             }
             catch (Exception ex)
             {
@@ -168,12 +181,19 @@ namespace story_maker.Services.Implementations
                     res.Success = false;
                     return res;
                 }
-                
+
+                await deleteTraitsByCharacterId(id);
+
                 oldCharacter.CharacterClassId = updatedCharacter.CharacterClassId;
                 oldCharacter.Description = updatedCharacter.Description;
                 oldCharacter.Name = updatedCharacter.Name;
                 oldCharacter.Story = updatedCharacter.Story;
-                oldCharacter.Traits = updatedCharacter.Traits;
+                oldCharacter.Traits = await _context.Traits.Where(x => updatedCharacter.Traits.Contains(x.TraitId)).ToListAsync();
+                await _context.SaveChangesAsync();
+                
+                await _context.SaveChangesAsync();
+
+                res.Data = _mapper.Map<GetCharacterDto>(oldCharacter);
             }
             catch (Exception ex)
             {
@@ -183,5 +203,11 @@ namespace story_maker.Services.Implementations
             }
             return res;
         }
+        private async Task deleteTraitsByCharacterId(int id){
+            var traits = await _context.Traits.Include(x=>x.Characters).Where(x=>x.Characters.Contains(_context.Characters.FirstOrDefault(c=>c.CharacterId == id))).ToListAsync();
+            foreach (var tr in traits)
+                tr.Characters.Remove(tr.Characters.FirstOrDefault(x=>x.CharacterId == id));
+            await _context.SaveChangesAsync();
+        } 
     }
 }

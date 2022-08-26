@@ -9,7 +9,6 @@ namespace story_maker{
             CreateMap<CharacterClass, GetCharacterClassDto>();
             CreateMap<Trait, GetTraitDto>();
 
-            CreateMap<AddCharacterDto, Character>();
             CreateMap<AddCharacterClassDto, CharacterClass>();
             CreateMap<AddTraitDto, Trait>();
         }

@@ -16,7 +16,7 @@ namespace story_maker.Controllers
         {
             this._characterService = _characterService;
         }
-        [HttpGet("GetAll")]
+        [HttpGet("GetAllCharacters")]
         public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> GetAllCharacters()
         {
             return Ok(await _characterService.GetAllCharacters());
@@ -26,7 +26,7 @@ namespace story_maker.Controllers
         {
             return Ok(await _characterService.GetCharacterById(id));
         }
-        [HttpGet("GetCharacterByClass/{classId}}")]
+        [HttpGet("GetCharacterByClass/{classId}")]
         public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> GetCharacterByClass(int classId)
         {
             return Ok(await _characterService.GetAllCharactersByClass(classId));
